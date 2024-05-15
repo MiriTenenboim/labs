@@ -69,10 +69,7 @@ contract SimpleBank {
     /// @dev Does not return excess
     /// @param withdrawAmount amount you want to withdraw
     /// @return remainingBal
-    function withdraw(uint256 withdrawAmount)
-        public
-        returns (uint256 remainingBal)
-    {
+    function withdraw(uint256 withdrawAmount) public returns (uint256 remainingBal) {
         require(withdrawAmount <= balances[msg.sender]);
 
         balances[msg.sender] -= withdrawAmount;
@@ -87,7 +84,7 @@ contract SimpleBank {
     /// @return The balance of the user
     // view - prevents function from editing state variables
     // allows function to run locally/off blockchain
-    function balance() view public returns (uint) {
+    function balance() public view returns (uint256) {
         return balances[msg.sender];
     }
 }

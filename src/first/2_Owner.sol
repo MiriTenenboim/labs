@@ -5,7 +5,6 @@ pragma solidity >=0.7.0 <0.9.0;
 /// @title Owner
 /// @dev Set & change Owner
 contract Owner {
-
     address private owner;
 
     // event for EVM logging
@@ -53,5 +52,4 @@ contract Owner {
     function getOwner() external view returns (address) {
         return owner;
     }
-
 }

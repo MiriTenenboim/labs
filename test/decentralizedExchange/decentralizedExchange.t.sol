@@ -8,9 +8,8 @@ import "foundry-huff/HuffDeployer.sol";
 import "../../src/decentralizedExchange/decentralizedExchange.sol";
 import "../../src/decentralizedExchange/ERC20.sol";
 
-contract DEXTest{
-
-    uint constant WAD = 10 ** 18;
+contract DEXTest {
+    uint256 constant WAD = 10 ** 18;
 
     DEX public dex;
 
@@ -21,16 +20,15 @@ contract DEXTest{
     uint256 initialBalanceB = 50000;
 
     function setUp() public {
-
         tokenA = new MyERC20(10000000000000);
         tokenB = new MyERC20(10000000000000);
-        
+
         dex = new DEX(address(tokenA), address(tokenB));
 
         tokenA.approve(address(dex), initialBalanceA);
         tokenB.approve(address(dex), initialBalanceB);
 
-        dex.initialize(initialBalanceA, initialBalanceB); 
+        dex.initialize(initialBalanceA, initialBalanceB);
     }
 
     function testTrade() public {
@@ -152,7 +150,6 @@ contract DEXTest{
         // console.log("balanceA", balanceA);
         // console.log("balanceB", balanceB);
         // vm.stopPrank();
-
     }
 
     // function testAddLiquidity() public {

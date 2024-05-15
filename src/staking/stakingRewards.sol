@@ -6,20 +6,19 @@ pragma solidity ^0.8.24;
 import "forge-std/interfaces/IERC20.sol";
 import "forge-std/console.sol";
 
-
 contract StakingRewards {
     IERC20 public immutable stakingToken;
     IERC20 public immutable rewardsToken;
     address public owner;
-    uint256 public duration = 7 days;   // [sec] reward duration
-    uint256 public finish   = 0;        // [sec] finish reward time
-    uint256 public updated;             // [sec] last time rate updated
-    uint256 public rate = 0;            // [per] reward rate per sec
-    uint256 public reward;              // reward per token stored
-    uint256 public staked;              // total staked
-    mapping(address => uint256) public paid;    // user reward per token paid
+    uint256 public duration = 7 days; // [sec] reward duration
+    uint256 public finish = 0; // [sec] finish reward time
+    uint256 public updated; // [sec] last time rate updated
+    uint256 public rate = 0; // [per] reward rate per sec
+    uint256 public reward; // reward per token stored
+    uint256 public staked; // total staked
+    mapping(address => uint256) public paid; // user reward per token paid
     mapping(address => uint256) public rewards; // reward to be claimed
-    mapping(address => uint256) public balances;// staked per user
+    mapping(address => uint256) public balances; // staked per user
 
     constructor(address st, address rt) {
         owner = msg.sender;
@@ -45,17 +44,16 @@ contract StakingRewards {
     }
 
     function earned(address guy) public view returns (uint256) {
-        return ((balances[guy] * (accumulated() - paid[guy])) / 1e18)
-                 + rewards[guy];
+        return ((balances[guy] * (accumulated() - paid[guy])) / 1e18) + rewards[guy];
     }
 
     // --- STATE CHANGES
     modifier updateReward(address guy) {
-        reward  = accumulated();
+        reward = accumulated();
         updated = lastTime();
         if (guy != address(0)) {
             rewards[guy] = earned(guy);
-            paid[guy]    = reward;
+            paid[guy] = reward;
         }
         _;
     }
@@ -87,17 +85,16 @@ contract StakingRewards {
         require(finish < block.timestamp, "reward duration not finished");
         duration = _duration;
     }
-    
-    function updateRate(uint256 amount) external
-    onlyOwner updateReward(address(0)) {
+
+    function updateRate(uint256 amount) external onlyOwner updateReward(address(0)) {
         console.log("block.timestamp", block.timestamp);
         console.log("finish", finish);
         if (block.timestamp >= finish) {
             rate = amount / duration;
             console.log("if");
         } else {
-            uint remaining = (finish - block.timestamp);
-            uint leftover  = remaining * rate;
+            uint256 remaining = (finish - block.timestamp);
+            uint256 leftover = remaining * rate;
             rate = (amount + leftover) / duration;
             console.log("else");
         }
@@ -107,9 +104,9 @@ contract StakingRewards {
         // rewardRate in the earned and rewardsPerToken functions;
         // Reward + leftover must be less than 2^256 / 10^18 to
         // avoid overflow.
-        uint balance = rewardsToken.balanceOf(address(this));
+        uint256 balance = rewardsToken.balanceOf(address(this));
         require(rate <= balance / duration, "provided reward too high");
-        finish  = block.timestamp + duration;
+        finish = block.timestamp + duration;
         updated = block.timestamp;
     }
 }

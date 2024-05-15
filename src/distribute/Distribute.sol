@@ -4,12 +4,9 @@ pragma solidity ^0.8.24;
 import "forge-std/console.sol";
 
 contract Distribute {
-
-
     address[] public usersAddresses;
 
-    constructor() {
-    }
+    constructor() {}
 
     receive() external payable {}
 
@@ -17,18 +14,17 @@ contract Distribute {
         usersAddresses.push(newUser);
     }
 
-    function distributeTotalAmount(uint256 totalAmount) public payable{
+    function distributeTotalAmount(uint256 totalAmount) public payable {
         uint256 amount = totalAmount / usersAddresses.length;
         console.log("amount", amount);
-        for (uint i = 0; i < usersAddresses.length; i++) {
+        for (uint256 i = 0; i < usersAddresses.length; i++) {
             payable(usersAddresses[i]).transfer(amount);
-        }       
+        }
     }
 
-    function distributeAmount(uint256 amount) public payable{
-        for (uint i = 0; i < usersAddresses.length; i++) {
+    function distributeAmount(uint256 amount) public payable {
+        for (uint256 i = 0; i < usersAddresses.length; i++) {
             payable(usersAddresses[i]).transfer(amount);
-        }       
+        }
     }
-
 }

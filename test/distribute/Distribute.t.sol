@@ -5,9 +5,8 @@ import {Test, console} from "forge-std/Test.sol";
 import {Distribute} from "../../src/Distribute/Distribute.sol";
 
 contract DistributeTest is Test {
-
     Distribute public distribute;
-    
+
     address[] usersAddresses = [
         0x7a3b914a1f0bD991BAf826F4fE9a47Bb9880d25f,
         0x057bB196e8f0326AFc453d2bcd1fCfCb4F879AfA,
@@ -44,7 +43,7 @@ contract DistributeTest is Test {
     function setUp() public {
         distribute = new Distribute();
 
-        for (uint i = 0; i < usersAddresses.length; i++) {
+        for (uint256 i = 0; i < usersAddresses.length; i++) {
             distribute.addUser(usersAddresses[i]);
         }
     }
@@ -59,10 +58,9 @@ contract DistributeTest is Test {
     }
 
     function testDistributeAmount() public {
-        uint256 amount = 10; 
+        uint256 amount = 10;
         payable(address(distribute)).transfer(amount * usersAddresses.length);
         distribute.distributeAmount(amount);
         assertEq(usersAddresses[0].balance, amount);
     }
-
 }

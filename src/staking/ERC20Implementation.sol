@@ -4,7 +4,7 @@ pragma solidity ^0.8.24;
 
 import "solmate/tokens/ERC20.sol";
 
-contract ERC20Implementation is ERC20{
+contract ERC20Implementation is ERC20 {
     // constructor(uint256 initialBalance) ERC20("ERC20", "ERC") {
     //     _mint(msg.sender, initialBalance);
     // }
@@ -16,5 +16,4 @@ contract ERC20Implementation is ERC20{
     function mint(address to, uint256 amount) external {
         _mint(to, amount);
     }
-
 }

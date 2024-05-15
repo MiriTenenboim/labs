@@ -9,7 +9,7 @@ import "../../src/staking/ERC20Implementation.sol";
 import "../../src/staking/stakingRewards.sol";
 
 contract StakingRewardsTest is Test {
-    uint WAD = 10 ** 18;
+    uint256 WAD = 10 ** 18;
 
     StakingRewards staking;
 
@@ -55,7 +55,7 @@ contract StakingRewardsTest is Test {
         console.log("block.timestamp", block.timestamp);
         console.log("finish", staking.finish());
         assertEq(staking.rate(), rate / duration, "False");
-        
+
         console.log("2");
         console.log("rate before", staking.rate());
         rate = 1000 * WAD;
@@ -64,7 +64,7 @@ contract StakingRewardsTest is Test {
         console.log("rate", staking.rate());
         console.log("block.timestamp", block.timestamp);
         console.log("finish", staking.finish());
-        assertEq(staking.rate(), (rate + (duration * rateBefore)) / duration, "False");   
+        assertEq(staking.rate(), (rate + (duration * rateBefore)) / duration, "False");
     }
 
     function testWithdraw() public {

@@ -8,9 +8,8 @@ import "foundry-huff/HuffDeployer.sol";
 import "../../src/decentralizedExchange/CP.sol";
 import "../../src/decentralizedExchange/ERC20.sol";
 
-contract CPNewTest is Test{
-
-    uint constant WAD = 10 ** 18;
+contract CPNewTest is Test {
+    uint256 constant WAD = 10 ** 18;
 
     CP public cp;
 
@@ -21,10 +20,9 @@ contract CPNewTest is Test{
     uint256 initialBalanceB = 0;
 
     function setUp() public {
-
         tokenA = new MyERC20(10000000000000);
         tokenB = new MyERC20(10000000000000);
-        
+
         cp = new CP(address(tokenA), address(tokenB));
 
         tokenA.mint(address(cp), initialBalanceA);
@@ -32,7 +30,6 @@ contract CPNewTest is Test{
     }
 
     function testSwap() public {
-        
         // first deposit
         address user1 = vm.addr(1);
         vm.startPrank(user1);
@@ -215,7 +212,6 @@ contract CPNewTest is Test{
         // console.log("balanceA", balanceA);
         // console.log("balanceB", balanceB);
         // vm.stopPrank();
-
     }
 
     // function testAddLiquidity() public {

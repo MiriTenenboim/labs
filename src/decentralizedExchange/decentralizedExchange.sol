@@ -5,7 +5,6 @@ import "forge-std/console.sol";
 import "forge-std/interfaces/IERC20.sol";
 
 contract DEX {
-
     IERC20 public tokenA;
     IERC20 public tokenB;
 
@@ -13,14 +12,14 @@ contract DEX {
 
     address owner;
 
-    mapping (address => uint256) public investors;
+    mapping(address => uint256) public investors;
 
     uint256 WAD = 10 ** 18;
 
     constructor(address a, address b) {
         tokenA = IERC20(a);
         tokenB = IERC20(b);
-        
+
         owner = msg.sender;
     }
 
@@ -36,18 +35,18 @@ contract DEX {
         k = initialBalanceA * initialBalanceB;
     }
 
-    function getBalances() public view returns(uint256 balanceA, uint256 balanceB) {
+    function getBalances() public view returns (uint256 balanceA, uint256 balanceB) {
         return (tokenA.balanceOf(address(this)), tokenB.balanceOf(address(this)));
     }
 
-    function calculateBForATrade(uint256 amountA) public view returns(uint256 amountB) {
+    function calculateBForATrade(uint256 amountA) public view returns (uint256 amountB) {
         uint256 balanceA = tokenA.balanceOf(address(this)) + amountA;
         uint256 balanceB = (k * WAD) / balanceA;
         amountB = tokenB.balanceOf(address(this)) - (balanceB / WAD);
         return amountB;
     }
 
-    function calculateAForBTrade(uint256 amountB) public view returns(uint256 amountA) {
+    function calculateAForBTrade(uint256 amountB) public view returns (uint256 amountA) {
         uint256 balanceB = tokenB.balanceOf(address(this)) + amountB;
         uint256 balanceA = (k * WAD) / balanceB;
         amountA = tokenA.balanceOf(address(this)) - (balanceA / WAD);
@@ -70,7 +69,7 @@ contract DEX {
         tokenA.transferFrom(address(this), msg.sender, amountA);
     }
 
-    function priceA(uint256 amountA) public view returns(uint256 amountB) {
+    function priceA(uint256 amountA) public view returns (uint256 amountB) {
         uint256 balanceA = tokenA.balanceOf(address(this));
         uint256 balanceB = tokenB.balanceOf(address(this));
         uint256 percent = (balanceA * WAD) / balanceB;
@@ -78,7 +77,7 @@ contract DEX {
         return amountB;
     }
 
-    function priceB(uint256 amountB) public view returns(uint256 amountA) {
+    function priceB(uint256 amountB) public view returns (uint256 amountA) {
         uint256 balanceA = tokenA.balanceOf(address(this));
         uint256 balanceB = tokenB.balanceOf(address(this));
         uint256 percent = (balanceB * WAD) / balanceA;
@@ -87,8 +86,11 @@ contract DEX {
     }
 
     function addLiquidity(uint256 amountA, uint256 amountB) public {
-        require(amountA / amountB == tokenA.balanceOf(address(this)) / tokenB.balanceOf(address(this)), "Amount must be deposited in the correct ratio");
-        
+        require(
+            amountA / amountB == tokenA.balanceOf(address(this)) / tokenB.balanceOf(address(this)),
+            "Amount must be deposited in the correct ratio"
+        );
+
         uint256 sum = amountA + amountB;
         investors[msg.sender] += sum;
 
@@ -98,7 +100,7 @@ contract DEX {
         k = tokenA.balanceOf(address(this)) * tokenB.balanceOf(address(this));
     }
 
-    function getMaxLiquidityToRemove() public view returns(uint256 maxA, uint256 maxB) {
+    function getMaxLiquidityToRemove() public view returns (uint256 maxA, uint256 maxB) {
         uint256 balanceA = tokenA.balanceOf(address(this));
         uint256 balanceB = tokenB.balanceOf(address(this));
         uint256 total = balanceA + balanceB;
@@ -106,16 +108,19 @@ contract DEX {
         maxA = balanceA * WAD / ratio;
         maxB = balanceB * WAD / ratio;
         return (maxA, maxB);
-    } 
+    }
 
-    function removeLiquidity(uint256 amountA, uint256 amountB) public returns(uint256, uint256){
+    function removeLiquidity(uint256 amountA, uint256 amountB) public returns (uint256, uint256) {
         require(investors[msg.sender] > 0, "You can not remove liquidity");
 
         (uint256 maxA, uint256 maxB) = getMaxLiquidityToRemove();
-        require(amountA / amountB == tokenA.balanceOf(address(this)) / tokenB.balanceOf(address(this)), "Amount must be removed in the correct ratio");
+        require(
+            amountA / amountB == tokenA.balanceOf(address(this)) / tokenB.balanceOf(address(this)),
+            "Amount must be removed in the correct ratio"
+        );
 
-        uint256 realAmountA = amountA > maxA? maxA: amountA;
-        uint256 realAmountB = amountB > maxB? maxB: amountB;
+        uint256 realAmountA = amountA > maxA ? maxA : amountA;
+        uint256 realAmountB = amountB > maxB ? maxB : amountB;
 
         uint256 sum = realAmountA + realAmountB;
         investors[msg.sender] -= sum;
@@ -129,5 +134,4 @@ contract DEX {
 
         return (realAmountA, realAmountB);
     }
-
 }

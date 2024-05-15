@@ -11,14 +11,14 @@ contract AuctionContractTest is Test {
     AuctionContract public auctionContract;
     MyERC721 tokenNFT;
 
-    function setUp() public{
+    function setUp() public {
         tokenNFT = new MyERC721();
         auctionContract = new AuctionContract(address(tokenNFT));
     }
 
-    receive() external payable{}
+    receive() external payable {}
 
-    function testAuction() public payable{
+    function testAuction() public payable {
         // Start auction
         uint256 tokenId = 1;
         uint256 bidAmount = 100;
@@ -71,5 +71,4 @@ contract AuctionContractTest is Test {
 
         assertEq(tokenNFT.ownerOf(tokenId), auctionContract.getAuction(auctionCounter).highestBidder);
     }
-
 }

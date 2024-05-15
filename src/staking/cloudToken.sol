@@ -18,16 +18,16 @@ contract CloudToken is IERC20 {
     }
 
     function approve(address spender, uint256 amount) external returns (bool) {
-        console.log("approve" , msg.sender);
-        console.log("approve - spender" , spender);
+        console.log("approve", msg.sender);
+        console.log("approve - spender", spender);
         allowance[msg.sender][spender] = amount;
         emit Approval(msg.sender, spender, amount);
         return true;
     }
 
     function transferFrom(address from, address to, uint256 amount) external returns (bool) {
-        console.log("transferFrom - from" , from);
-        console.log("transferFrom" , msg.sender);
+        console.log("transferFrom - from", from);
+        console.log("transferFrom", msg.sender);
         allowance[from][msg.sender] -= amount;
         balanceOf[from] -= amount;
         balanceOf[to] += amount;

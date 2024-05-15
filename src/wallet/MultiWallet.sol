@@ -31,10 +31,8 @@ contract MultiWallet {
 
     modifier isOwner() {
         require(
-            (msg.sender == owners[0]) ||
-                (msg.sender == owners[1]) ||
-                (msg.sender == owners[2]) ||
-                (msg.sender == chairman),
+            (msg.sender == owners[0]) || (msg.sender == owners[1]) || (msg.sender == owners[2])
+                || (msg.sender == chairman),
             "Only the owner allowed to do this"
         );
         _;
@@ -55,10 +53,7 @@ contract MultiWallet {
     }
 
     /// @notice replace exist owner by new owner
-    function replaceOwner(
-        address oldOwner,
-        address newOwner
-    ) public isChairman {
+    function replaceOwner(address oldOwner, address newOwner) public isChairman {
         require((owners[0] == oldOwner) || (owners[1] == oldOwner) || (owners[2] == oldOwner), "Owner not exist");
         if (owners[0] == oldOwner) owners[0] = payable(newOwner);
         else if (owners[1] == oldOwner) owners[1] = payable(newOwner);
@@ -79,8 +74,7 @@ contract MultiWallet {
     /// @notice withdraw ETH from the contract address to the owner wallet
     function withdraw(uint256 amountWithdraw) public isOwner {
         require(
-            address(this).balance >= amountWithdraw,
-            "The amount to withdraw should be less than your current balance"
+            address(this).balance >= amountWithdraw, "The amount to withdraw should be less than your current balance"
         );
 
         // transfer Ether from the contract to the owner

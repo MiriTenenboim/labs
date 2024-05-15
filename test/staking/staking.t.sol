@@ -12,7 +12,7 @@ contract StakingTest is Test {
 
     CloudToken public cloudToken;
 
-    uint WAD = 10 ** 18;
+    uint256 WAD = 10 ** 18;
 
     function setUp() public {
         cloudToken = new CloudToken();
@@ -45,5 +45,4 @@ contract StakingTest is Test {
         staking.stake(amountToDeposit);
         assertEq(amountToDeposit, staking.getTotalStaked(), "Error");
     }
-
 }

@@ -16,8 +16,8 @@ contract Storage {
     /// @dev Return value
     /// @return value of 'number'
     // what is view?
-    // view - the function does not change state 
-    function retrieve() public view returns (uint) {
+    // view - the function does not change state
+    function retrieve() public view returns (uint256) {
         return number;
     }
 }

@@ -5,13 +5,11 @@ import "forge-std/interfaces/IERC721.sol";
 import "forge-std/console.sol";
 
 contract AuctionContract {
-
-    // Struct to represent an auction
     struct Auction {
         address seller;
         uint256 tokenId;
         bool started;
-        uint256 endAt; 
+        uint256 endAt;
         address highestBidder;
         uint256 highestBid;
     }
@@ -31,8 +29,8 @@ contract AuctionContract {
     constructor(address _tokenNFT) {
         tokenNFT = IERC721(_tokenNFT);
     }
-    
-    function getAuction(uint256 auctionId) public view returns(Auction memory) {
+
+    function getAuction(uint256 auctionId) public view returns (Auction memory) {
         return auctions[auctionId];
     }
 
@@ -40,13 +38,13 @@ contract AuctionContract {
         require(msg.sender == auctions[auctionId].seller, "Only the seller can set the auction");
         _;
     }
-    
-    function setEndAt(uint256 auctionId, uint256 endAt) public OnlySeller(auctionId){
+
+    function setEndAt(uint256 auctionId, uint256 endAt) public OnlySeller(auctionId) {
         require(auctions[auctionId].endAt < endAt);
         auctions[auctionId].endAt = endAt;
     }
 
-    function startAuction(uint256 tokenId, uint256 endAt) public payable returns (uint256){
+    function startAuction(uint256 tokenId, uint256 endAt) public payable returns (uint256) {
         require(tokenNFT.ownerOf(tokenId) == msg.sender, "Not token owner");
 
         auctions[auctionCounter].seller = msg.sender;
@@ -62,7 +60,7 @@ contract AuctionContract {
         auctionCounter++;
 
         emit startAuctionEvent(msg.sender, auctionCounter);
-        
+
         return auctionCounter - 1;
     }
 
@@ -70,7 +68,9 @@ contract AuctionContract {
     function placeBid(uint256 auctionId) public payable {
         require(auctions[auctionId].started, "This auction is no longer active");
         require(block.timestamp < auctions[auctionId].endAt, "This auction is no longer active");
-        require(msg.value > 0 && msg.value > auctions[auctionId].highestBid, "Your bid must be greater than the highest bid");
+        require(
+            msg.value > 0 && msg.value > auctions[auctionId].highestBid, "Your bid must be greater than the highest bid"
+        );
 
         console.log("Previous highest bidder:", auctions[auctionId].highestBidder);
         console.log("Previous highest bid:", auctions[auctionId].highestBid);
@@ -88,7 +88,7 @@ contract AuctionContract {
         auctions[auctionId].highestBid = msg.value;
 
         emit placeBidEvent(msg.sender, msg.value);
-    }   
+    }
 
     function endAuction(uint256 auctionId) public {
         require(auctions[auctionId].endAt < block.timestamp, "The auction is still active");
@@ -106,5 +106,4 @@ contract AuctionContract {
 
         emit endAuctionEvent(auctions[auctionId].highestBidder, auctionId, amount);
     }
-
 }

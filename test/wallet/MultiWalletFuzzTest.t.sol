@@ -20,7 +20,7 @@ contract MultiWalletFuzzTest is Test {
         multiWallet.insertOwner(newOwner1);
         multiWallet.insertOwner(newOwner2);
         multiWallet.insertOwner(newOwner3);
-        
+
         vm.expectRevert("Only three owners allowed");
         multiWallet.insertOwner(newOwner4);
     }
@@ -122,10 +122,6 @@ contract MultiWalletFuzzTest is Test {
     // }
 
     function testGetBalance() public {
-        assertEq(
-            multiWallet.getBalance(),
-            address(multiWallet).balance,
-            "Not equal"
-        );
+        assertEq(multiWallet.getBalance(), address(multiWallet).balance, "Not equal");
     }
 }

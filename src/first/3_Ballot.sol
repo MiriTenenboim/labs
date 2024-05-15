@@ -4,7 +4,6 @@ pragma solidity >=0.7.0 <0.9.0;
 
 /// @title Ballot
 contract Ballot {
-
     // pointer
     struct Voter {
         // weight is accumulated by delegation
@@ -51,10 +50,7 @@ contract Ballot {
     /// @param voter - address of voter
     function giveRightToVote(address voter) public {
         // only the chairperson can give the right
-        require(
-            msg.sender == chairperson,
-            "Only chairperson can give right to vote."
-        );
+        require(msg.sender == chairperson, "Only chairperson can give right to vote.");
 
         // only voter that didn't vote will be able to vote
         require(!voters[voter].voted, "The voter already voted.");
@@ -125,8 +121,7 @@ contract Ballot {
     function winningProposal() public view returns (uint256 winningProposal_) {
         uint256 winningVoteCount = 0;
 
-        for (uint p = 0; p < proposals.length; p++) 
-        {
+        for (uint256 p = 0; p < proposals.length; p++) {
             // find the maximum - the winners
             if (proposals[p].voteCount > winningVoteCount) {
                 winningVoteCount = proposals[p].voteCount;
@@ -140,5 +135,4 @@ contract Ballot {
     function winnerName() public view returns (bytes32 winnerName_) {
         winnerName_ = proposals[winningProposal()].name;
     }
-
 }

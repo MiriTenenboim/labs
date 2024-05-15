@@ -24,7 +24,7 @@ pragma solidity ^0.8.24;
 
 //         tokenA = new MyERC20(10000000000000);
 //         tokenB = new MyERC20(10000000000000);
-        
+
 //         cp = new CP(address(tokenA), address(tokenB));
 
 //         tokenA.mint(address(cp), 50000);
