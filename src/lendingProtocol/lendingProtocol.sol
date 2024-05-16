@@ -112,7 +112,7 @@ contract LendingProtocol {
     // Function to fetch the ETH/USD price from Chainlink oracle
   function getEthUsdPrice() public view returns (uint256) {
     AggregatorV3Interface priceFeed = AggregatorV3Interface(ethUsdPriceFeed);
-    (, int256 ethPrice, , , ) = priceFeed.getRoundData(0);
+    (, int256 ethPrice, , , ) = priceFeed.latestRoundData();
     // Assuming positive price value
     require(ethPrice > 0, "Invalid ETH price received");
     // Convert price to uint (remove decimals) considering signed int
