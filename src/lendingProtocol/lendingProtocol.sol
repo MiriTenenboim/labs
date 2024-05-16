@@ -4,7 +4,6 @@ pragma solidity ^0.8.24;
 import "forge-std/console.sol";
 import "forge-std/interfaces/IERC20.sol";
 import "./bondToken.sol";
-import "./aa.sol";
 
 contract LendingProtocol {
 
@@ -30,8 +29,6 @@ contract LendingProtocol {
     // collateralToken;                 // ETH - moved by msg.value to the contract
 
     uint256 public maxLTV = 80;
-
-    address public constant ethUsdPriceFeed = 0x514910771AF9Ca656af840dff83E8264EcF986CA;
 
     constructor() {
         owner = msg.sender;
@@ -108,22 +105,5 @@ contract LendingProtocol {
     function convertETHToreserveAssets() public onlyOwner {
 
     }
-
-    // Function to fetch the ETH/USD price from Chainlink oracle
-  function getEthUsdPrice() public view returns (uint256) {
-    AggregatorV3Interface priceFeed = AggregatorV3Interface(ethUsdPriceFeed);
-    (, int256 ethPrice, , , ) = priceFeed.latestRoundData();
-    // Assuming positive price value
-    require(ethPrice > 0, "Invalid ETH price received");
-    // Convert price to uint (remove decimals) considering signed int
-    return uint256(ethPrice);
-  }
-
-  // Function to estimate DAI/ETH price (assuming 1 DAI = 1 USD)
-  function getDaiEthPrice() public view returns (uint256) {
-    uint256 ethUsdPrice = getEthUsdPrice();
-    // Assuming 1 DAI = 1 USD, so DAI/ETH = ETH/USD
-    return ethUsdPrice;
-  }
 
 }
