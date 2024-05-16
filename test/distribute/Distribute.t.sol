@@ -2,7 +2,7 @@
 pragma solidity ^0.8.24;
 
 import {Test, console} from "forge-std/Test.sol";
-import {Distribute} from "../../src/Distribute/Distribute.sol";
+import {Distribute} from "../../src/distribute/Distribute.sol";
 
 contract DistributeTest is Test {
     Distribute public distribute;

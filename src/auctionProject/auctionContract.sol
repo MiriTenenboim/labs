@@ -66,7 +66,10 @@ contract AuctionContract {
 
     // Assuming that the person who activates the function sends a value that will be sent from him to the smart contract
     function placeBid(uint256 auctionId) public payable {
+        console.log(auctions[auctionId].started);
         require(auctions[auctionId].started, "This auction is no longer active");
+        console.log(auctions[auctionId].endAt);
+        console.log("block.timestamp", block.timestamp);
         require(block.timestamp < auctions[auctionId].endAt, "This auction is no longer active");
         require(
             msg.value > 0 && msg.value > auctions[auctionId].highestBid, "Your bid must be greater than the highest bid"
