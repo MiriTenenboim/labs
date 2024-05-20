@@ -28,13 +28,15 @@ contract LendingProtocolTest is Test {
 
         // Withdraw
         uint256 amountToWithdraw = 10;
+        uint256 amountBefore = lendingProtocol.getLender().amount;
         lendingProtocol.withdraw(amountToWithdraw);
+        assertEq(amountBefore - amountToWithdraw, lendingProtocol.getLender().amount, "Error");
 
         // Borrow
         // 1
         vm.deal(user, 100000000);
         uint256 borrowAmount = 80;
-        uint256 amountBefore = lendingProtocol.getBorrower().borrow;
+        amountBefore = lendingProtocol.getBorrower().borrow;
         lendingProtocol.borrow{value: 100}(borrowAmount);
         assertEq(amountBefore + borrowAmount, lendingProtocol.getBorrower().borrow, "Error");
 
