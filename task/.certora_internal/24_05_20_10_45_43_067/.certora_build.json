@@ -1,0 +1,52 @@
+{
+    "Empty_00000000ce4604a0000000000000000000000001": {
+        "contracts": [
+            {
+                "address": "00000000ce4604a0000000000000000000000001",
+                "allMethods": [],
+                "bytecode": "60806040525f80fdfea2646970667358221220ce1802c8c9cdb8f1977ef6712007191f99216afb7c0604ba2daf936d04fccb8864736f6c63430008180033",
+                "compilerName": "solc",
+                "compilerParameters": {
+                    "optimizerOn": false,
+                    "optimizerRuns": null,
+                    "type": "SolcParameters",
+                    "viaIR": false
+                },
+                "compilerVersion": "0.8.24",
+                "constructorBytecode": "6080604052348015600e575f80fd5b50603e80601a5f395ff3fe60806040525f80fdfea2646970667358221220ce1802c8c9cdb8f1977ef6712007191f99216afb7c0604ba2daf936d04fccb8864736f6c63430008180033",
+                "constructorSrcmap": "65:19:0:-:0;;;;;;;;;;;;;;;;;;;",
+                "file": "Empty.sol",
+                "immutables": [],
+                "internalFunctions": {},
+                "is_static_address": false,
+                "lang": "Solidity",
+                "methods": [],
+                "name": "Empty",
+                "original_file": "Empty.sol",
+                "solidityTypes": [],
+                "sourceBytes": {
+                    "begin": 65,
+                    "size": 19
+                },
+                "srcmap": "65:19:0:-:0;;;;;",
+                "storageLayout": {
+                    "storage": [],
+                    "types": null
+                },
+                "varmap": ""
+            }
+        ],
+        "legacyStructLinking": {},
+        "library_addresses": [],
+        "primary_contract": "Empty",
+        "primary_contract_address": "00000000ce4604a0000000000000000000000001",
+        "prototypeFor": [],
+        "sdc_name": "Empty.sol_0",
+        "sourceDir": ".post_autofinders.0",
+        "srclist": {
+            "0": "Empty.sol"
+        },
+        "state": {},
+        "structLinkingInfo": {}
+    }
+}
