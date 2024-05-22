@@ -69,7 +69,6 @@ class ERC20 {
         r := transferFrom(msg, msg.sender, dst, wad);
     }
 
-
     // instead of assuming I added a dst_bal require
     // assume (old(balanceOf).Get(dst) as nat) + (wad as nat) <= MAX_U256;
     // safe, once wad is bounded by balances[src]

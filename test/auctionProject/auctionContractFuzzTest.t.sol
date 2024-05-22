@@ -3,7 +3,7 @@ pragma solidity ^0.8.24;
 
 import {Test, console} from "forge-std/Test.sol";
 import {AuctionContract} from "../../src/auctionProject/auctionContract.sol";
-import "./MyERC721.sol";
+import "./ERC721.sol";
 
 contract AuctionContractTest is Test {
     AuctionContract public auctionContract;

@@ -28,7 +28,7 @@ contract LendingProtocol {
     IERC20 public DAI;                  // Borrow token
     // collateralToken;                 // ETH - moved by msg.value to the contract
 
-    uint256 public totalDeposited;         // DAI
+    uint256 public totalDeposited;      // DAI
 
     uint256 public maxLTV = 80;
     uint256 public borrowFee = 3;
@@ -83,7 +83,7 @@ contract LendingProtocol {
     // Unbond bond tokens and receive DAI in return
     function withdraw(uint256 amount) public {
         require(amount <= lenders[msg.sender].amount, "Not enough balance for withdrawal");
-        require(DAI.balanceOf(address(this)) >= amount, "Not enough balance for withdrawal")
+        require(DAI.balanceOf(address(this)) >= amount, "Not enough balance for withdrawal");
 
         bondToken.burn(msg.sender, amount);
         DAI.approve(address(this), amount);
