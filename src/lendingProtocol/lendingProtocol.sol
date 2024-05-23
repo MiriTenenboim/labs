@@ -119,7 +119,7 @@ contract LendingProtocol {
         DAI.transferFrom(address(this), msg.sender, borrowAmount);
     }
 
-    function DistributionFee(uint256 fee) private {
+    function distributionFee(uint256 fee) private {
         uint256 depositRatio;
         uint256 amountFee;
         
@@ -137,7 +137,7 @@ contract LendingProtocol {
         DAI.transferFrom(msg.sender, address(this), amountToBorrow + fee);
         borrowers[msg.sender].borrow -= amountToBorrow;
 
-        DistributionFee(fee);
+        distributionFee(fee);
     }
 
     // Remove ETH collateral from the protocol
@@ -177,7 +177,7 @@ contract LendingProtocol {
 
     // Harvest rewards accrued by the protocol
     function harvestRewards(uint256 amount) private {
-        payable(msg.sender).transfer(amount);
+        payable(owner).transfer(amount);
     }
     
     function convertETHToreserveAssets() public onlyOwner {
