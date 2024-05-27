@@ -1,13 +1,14 @@
+
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.7;
 
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
+import "@chainlink/contracts/v0.8/interfaces/AggregatorV3Interface.sol";
 
-import "./interfaces/ISwapRouter.sol";
-import "./Math.sol";
+import "./ISwapRouter.sol";
+import "./math.sol";
 
 interface ILendingPool {
     function deposit(
@@ -110,7 +111,7 @@ contract BondToken is ERC20Burnable, Ownable, Math {
         usersCollateral[msg.sender] -= _amount;
         totalCollateral -= _amount;
         _withdrawWethFromAave(_amount);
-        payable(address(this)).transfer(_amount);
+        payable(msg.sender).transfer(_amount);
     }
 
     function borrow(uint256 _amount) external {
