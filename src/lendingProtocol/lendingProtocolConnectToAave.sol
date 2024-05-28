@@ -43,7 +43,7 @@ interface IUniswapRouter is ISwapRouter {
     function refundETH() external payable;
 }
 
-contract BondToken is ERC20Burnable, Ownable(address(this)), InnerMath {
+contract BondToken is Ownable(address(this)), InnerMath {
     using Math for uint256;
 
     uint256 public totalBorrowed;
@@ -72,24 +72,28 @@ contract BondToken is ERC20Burnable, Ownable(address(this)), InnerMath {
     IERC20 private constant weth =
         IERC20(0xd0A1E359811322d97991E03f863a0C30C2cF029C);
 
+    ERC20 public bDAI;
+
     mapping(address => uint256) private usersCollateral;
     mapping(address => uint256) private usersBorrowed;
 
-    constructor() ERC20("Bond DAI", "bDAI") {}
+    constructor(address _bDAI) {
+        bDAI = new ERC20(_bDAI);
+    }
 
     function bondAsset(uint256 _amount) external {
         dai.transferFrom(msg.sender, address(this), _amount);
         totalDeposit += _amount;
         _sendDaiToAave(_amount);
         uint256 bondsToMint = InnerMath.getExp(_amount, getExchangeRate());
-        _mint(msg.sender, bondsToMint);
+        bDAI.mint(msg.sender, bondsToMint);
     }
 
     function unbondAsset(uint256 _amount) external {
         require(_amount <= balanceOf(msg.sender), "Not enough bonds!");
         uint256 daiToReceive = InnerMath.mulExp(_amount, getExchangeRate());
         totalDeposit -= daiToReceive;
-        burn(_amount);
+        bDAI.burn(msg.sender, _amount);
         _withdrawDaiFromAave(daiToReceive);
     }
 
