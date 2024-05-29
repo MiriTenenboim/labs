@@ -61,7 +61,7 @@ contract LendingProtocolConnectToAave is Ownable(msg.sender), InnerMath {
     ILendingPool public constant aave =
         ILendingPool(0x56Ab717d882F7A8d4a3C2b191707322c5Cc70db8);
     IWETHGateway public constant wethGateway =
-        IWETHGateway(0xA61ca04DF33B72b235a8A28CfB535bb7A5271B70);
+        IWETHGateway(0x9cd9F38cAF08999E660Af70d11Bb9ce08f16bc42);
     IERC20 public constant dai =
         IERC20(0x77FDe93fEe5fe272dC17d799cb61447431E6Eba2);  //dai
     IERC20 public constant aDai =
@@ -71,7 +71,7 @@ contract LendingProtocolConnectToAave is Ownable(msg.sender), InnerMath {
     IERC20 private constant weth =
         IERC20(0xc8c0Cf9436F4862a8F60Ce680Ca5a9f0f99b5ded);  //weth
     AggregatorV3Interface internal constant priceFeed =
-        AggregatorV3Interface(0x9326BFA02ADD2366b30bacB125260Af641031331);
+        AggregatorV3Interface(0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419);
     IUniswapRouter public constant uniswapRouter =
         IUniswapRouter(0xE592427A0AEce92De3Edee1F18E0157C05861564);
 
@@ -252,7 +252,7 @@ contract LendingProtocolConnectToAave is Ownable(msg.sender), InnerMath {
 
     function _interestMultiplier() public view returns (uint256) {
         uint256 uRatio = _utilizationRatio();
-         (bool success, uint256 num) = fixedAnnuBorrowRate.trySub(baseRate);
+        (bool success, uint256 num) = fixedAnnuBorrowRate.trySub(baseRate);
         require(success, "Subtraction underflow");
         return InnerMath.getExp(num, uRatio);
     }
