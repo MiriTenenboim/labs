@@ -9,6 +9,9 @@ import "@chainlink/contracts/v0.8/interfaces/AggregatorV3Interface.sol";
 
 import "./ISwapRouter.sol";
 import "./innerMath.sol";
+import "./DSMath.sol";
+
+import "./bondToken.sol";
 
 interface ILendingPool {
     function deposit(
@@ -43,7 +46,7 @@ interface IUniswapRouter is ISwapRouter {
     function refundETH() external payable;
 }
 
-contract BondToken is Ownable(address(this)), InnerMath {
+contract LendingProtocolConnectToAave is Ownable(msg.sender), InnerMath {
     using Math for uint256;
 
     uint256 public totalBorrowed;
@@ -56,7 +59,7 @@ contract BondToken is Ownable(address(this)), InnerMath {
     uint256 public fixedAnnuBorrowRate = 300000000000000000;
 
     ILendingPool public constant aave =
-        ILendingPool(0xE0fBa4Fc209b4948668006B2bE61711b7f465bAe);
+        ILendingPool(0x56Ab717d882F7A8d4a3C2b191707322c5Cc70db8);
     IWETHGateway public constant wethGateway =
         IWETHGateway(0xA61ca04DF33B72b235a8A28CfB535bb7A5271B70);
     IERC20 public constant dai =
@@ -72,25 +75,25 @@ contract BondToken is Ownable(address(this)), InnerMath {
     IERC20 private constant weth =
         IERC20(0xd0A1E359811322d97991E03f863a0C30C2cF029C);
 
-    ERC20 public bDAI;
+    BondToken public bDAI;
 
     mapping(address => uint256) private usersCollateral;
     mapping(address => uint256) private usersBorrowed;
 
-    constructor(address _bDAI) {
-        bDAI = new ERC20(_bDAI);
+    constructor() {
+        bDAI = new BondToken();
     }
 
     function bondAsset(uint256 _amount) external {
         dai.transferFrom(msg.sender, address(this), _amount);
-        totalDeposit += _amount;
         _sendDaiToAave(_amount);
         uint256 bondsToMint = InnerMath.getExp(_amount, getExchangeRate());
+        totalDeposit += _amount;
         bDAI.mint(msg.sender, bondsToMint);
     }
 
     function unbondAsset(uint256 _amount) external {
-        require(_amount <= balanceOf(msg.sender), "Not enough bonds!");
+        require(_amount <= bDAI.balanceOf(msg.sender), "Not enough bonds!");
         uint256 daiToReceive = InnerMath.mulExp(_amount, getExchangeRate());
         totalDeposit -= daiToReceive;
         bDAI.burn(msg.sender, _amount);
@@ -109,7 +112,8 @@ contract BondToken is Ownable(address(this)), InnerMath {
         uint256 collateral = usersCollateral[msg.sender];
         require(collateral > 0, "Dont have any collateral");
         uint256 borrowed = usersBorrowed[msg.sender];
-        uint256 amountLeft = InnerMath.mulExp(collateral, wethPrice).sub(borrowed);
+        (bool success, uint256 amountLeft) = (InnerMath.mulExp(collateral, wethPrice)).trySub(borrowed);
+        require(success, "Subtraction underflow");
         uint256 amountToRemove = InnerMath.mulExp(_amount, wethPrice);
         require(amountToRemove < amountLeft, "Not enough collateral to remove");
         usersCollateral[msg.sender] -= _amount;
@@ -142,7 +146,8 @@ contract BondToken is Ownable(address(this)), InnerMath {
     {
         uint256 borrowRate = _borrowRate();
         uint256 fee = InnerMath.mulExp(_amount, borrowRate);
-        uint256 paid = _amount.sub(fee);
+        (bool success, uint256 paid) = _amount.trySub(fee);
+        require(success, "Subtraction underflow");
         return (fee, paid);
     }
 
@@ -162,22 +167,28 @@ contract BondToken is Ownable(address(this)), InnerMath {
     }
 
     function getExchangeRate() public view returns (uint256) {
-        if (totalSupply() == 0) {
+        if (bDAI.totalSupply() == 0) {
             return 1000000000000000000;
         }
         uint256 cash = getCash();
-        uint256 num = cash.add(totalBorrowed).add(totalReserve);
-        return InnerMath.getExp(num, totalSupply());
+        (bool success, uint256 num) = cash.tryAdd(totalBorrowed);
+        require(success, "Addition overflow");
+        (success, num) = num.tryAdd(totalReserve);
+        require(success, "Addition overflow");
+        return InnerMath.getExp(num, bDAI.totalSupply());
     }
 
     function getCash() public view returns (uint256) {
-        return totalDeposit.sub(totalBorrowed);
+        (bool success, uint256 cash) = totalDeposit.trySub(totalBorrowed);
+        require(success, "Subtraction underflow");
+        return cash;
     }
 
     function harvestRewards() external onlyOwner {
         uint256 aWethBalance = aWeth.balanceOf(address(this));
         if (aWethBalance > totalCollateral) {
-            uint256 rewards = aWethBalance.sub(totalCollateral);
+            (bool success, uint256 rewards) = aWethBalance.trySub(totalCollateral);
+            require(success, "Subtraction underflow");
             _withdrawWethFromAave(rewards);
             ethTreasury += rewards;
         }
@@ -194,9 +205,8 @@ contract BondToken is Ownable(address(this)), InnerMath {
         require(amountLocked > 0, "No collateral found");
         uint256 amountBorrowed = usersBorrowed[msg.sender];
         uint256 wethPrice = uint256(_getLatestPrice());
-        uint256 amountLeft = InnerMath.mulExp(amountLocked, wethPrice).sub(
-            amountBorrowed
-        );
+        (bool success, uint256 amountLeft) = (InnerMath.mulExp(amountLocked, wethPrice)).trySub(amountBorrowed);
+        require(success, "Subtraction underflow");
         return InnerMath.percentage(amountLeft, maxLTV);
     }
 
@@ -241,7 +251,8 @@ contract BondToken is Ownable(address(this)), InnerMath {
 
     function _interestMultiplier() public view returns (uint256) {
         uint256 uRatio = _utilizationRatio();
-        uint256 num = fixedAnnuBorrowRate.sub(baseRate);
+         (bool success, uint256 num) = fixedAnnuBorrowRate.trySub(baseRate);
+        require(success, "Subtraction underflow");
         return InnerMath.getExp(num, uRatio);
     }
 
@@ -249,7 +260,9 @@ contract BondToken is Ownable(address(this)), InnerMath {
         uint256 uRatio = _utilizationRatio();
         uint256 interestMul = _interestMultiplier();
         uint256 product = InnerMath.mulExp(uRatio, interestMul);
-        return product.add(baseRate);
+        (bool success, uint256 result) = product.tryAdd(baseRate);
+        require(success, "Addition overflow");
+        return result;
     }
 
     function _depositRate() public view returns (uint256) {

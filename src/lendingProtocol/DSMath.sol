@@ -13,6 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+//SPDX-License-Identifier: Unlicense
 pragma solidity >0.4.13;
 
 contract DSMath {
@@ -51,7 +52,7 @@ contract DSMath {
         z = add(mul(x, y), RAY / 2) / RAY;
     }
     //rounds to zero if x*y < WAD / 2
-    function wdiv(uint x, uint y) internal pure returns (uint z) {
+    function wdiv(uint x, uint y) external pure returns (uint z) {
         z = add(mul(x, WAD), y / 2) / y;
     }
     //rounds to zero if x*y < RAY / 2

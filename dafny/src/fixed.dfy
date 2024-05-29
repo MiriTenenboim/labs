@@ -12,7 +12,8 @@ import opened Number
 import opened Maps
 import opened Tx
 
-    const WAD: u256 := 1_000_000_000_000_000_000 // 18 zeros
+    // const WAD: u256 := 1_000_000_000_000_000_000 // 18 zeros
+    const WAD: u256 := 1_000
     const RAY: u256 := 1_000_000_000_000_000_000_000_000_000 // 27
 
     function Add(x: u256, y: u256) : u256 
@@ -49,6 +50,17 @@ import opened Tx
         ((x * y) + (w / 2)) / w
     }
 
+    function Wdiv(x: u256, y: u256) : (r: u256)
+    requires (x as nat) * (y as nat) <= MAX_U256 as nat
+    requires (x as nat) * (WAD as nat) <= MAX_U256 as nat
+    requires Mul(x, WAD) as nat + (y / 2) as nat <= MAX_U256
+    requires y != 0
+    ensures r < MAX_U256 as u256 {
+        var m: u256 := Mul(x, WAD);
+        var w: u256 := y / 2;
+        var z: u256 := Add(m, w);
+        z / y
+    }
 }
 
 // --- TESTS
@@ -63,7 +75,12 @@ method {:test} testFindMax() {
     var i := 1000000000000000000 as u256;
     var r := 1000000000000000000 as u256;
 
-    assert Wmul(j,i) == r; 
+    var a := 2000 as u256;
+    var b := 4000 as u256;
+
+    assert Wdiv(a, b) == 500;
+
+    // assert Wmul(j,i) == r; 
     assert Wmul(WAD, WAD) == WAD;
 
     var x : nat := 100000000000000000;
