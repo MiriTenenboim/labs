@@ -1,6 +1,6 @@
-include "util/number.dfy"
-include "util/maps.dfy"
-include "util/tx.dfy"
+include "number.dfy"
+include "maps.dfy"
+include "tx.dfy"
 
 
 
