@@ -22,8 +22,8 @@ class LendingProtocol {
     const fixedAnnuBorrowRate: u256 := 300000000000000000
 
     var usersCollateral: mapping<u160, u256>  // ETH
-    var usersBorrowed: mapping<u160, u256>    // DAI
-    var usersBalances: mapping<u160, u256>    // DAI
+    var usersBorrowed: mapping<u160, u256>    // DAI - borrow
+    var usersBalances: mapping<u160, u256>    // DAI - bond
 
     const WAD: u256 := 1000000000000000000
     const HALF_WAD: u256 := WAD / 2
@@ -40,10 +40,19 @@ class LendingProtocol {
         bDAI := new ERC20();
     }
 
+    method getCash() returns (cash: u256)
+    requires this.totalDeposit as nat - this.totalBorrow as nat >= 0 as nat
+    {
+        cash := Sub(this.totalDeposit, this.totalBorrow);
+    }
+
     method bondAsset(msg: Transaction, amount: u256)
     modifies this`totalDeposit
+    modifies this`usersBalances
+    requires usersBalances.Get(msg.sender) as nat + amount as nat <= MAX_U256 as nat
     requires this.totalDeposit as nat + amount as nat <= MAX_U256 as nat {
-        // usersBalances := 
+        usersBalances := usersBalances.Set(msg.sender, usersBalances.Get(msg.sender) + amount);
+        // var bondToMint: u256 := getExp(amount, )
         totalDeposit := totalDeposit + amount;
     }
     
