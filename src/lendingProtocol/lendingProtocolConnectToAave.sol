@@ -61,7 +61,7 @@ contract LendingProtocolConnectToAave is Ownable(msg.sender), InnerMath {
     ILendingPool public constant aave =
         ILendingPool(0x56Ab717d882F7A8d4a3C2b191707322c5Cc70db8);
     IWETHGateway public constant wethGateway =
-        IWETHGateway(0x9cd9F38cAF08999E660Af70d11Bb9ce08f16bc42);
+        IWETHGateway(0xd5B55D3Ed89FDa19124ceB5baB620328287b915d);
     IERC20 public constant dai =
         IERC20(0x77FDe93fEe5fe272dC17d799cb61447431E6Eba2);  //dai
     IERC20 public constant aDai =
