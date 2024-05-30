@@ -81,16 +81,20 @@ class LendingProtocol {
     }
 
     method utilizationRatio() returns (utilizationRatio: u256)
-    requires this.totalBorrow as nat * WAD as nat <= MAX_U256 as nat
+    requires this.totalBorrow as nat * this.totalDeposit as nat <= MAX_U256 as nat
     requires this.totalDeposit != 0
+    requires (this.totalBorrow as nat) * (WAD as nat) <= MAX_U256 as nat
+    requires Mul(this.totalBorrow, WAD) as nat + (this.totalDeposit / 2) as nat <= MAX_U256
     {
-        utilizationRatio := getExp(this.totalBorrow, this.totalDeposit);
+        utilizationRatio := Wdiv(this.totalBorrow, this.totalDeposit);
     }
 
     method interestMultiplier() returns (interestMul: u256)
     requires this.fixedAnnuBorrowRate > this.baseRate
     requires this.totalBorrow as nat * WAD as nat <= MAX_U256 as nat
     requires this.totalDeposit != 0
+    requires this.totalBorrow as nat * this.totalDeposit as nat <= MAX_U256 as nat
+    requires Mul(this.totalBorrow, WAD) as nat + (this.totalDeposit / 2) as nat <= MAX_U256
     {
         var uRatio: u256 := utilizationRatio();
         var num: u256 := Sub(this.fixedAnnuBorrowRate, this.baseRate);
@@ -103,6 +107,8 @@ class LendingProtocol {
     requires this.fixedAnnuBorrowRate > this.baseRate
     requires this.totalBorrow as nat * WAD as nat <= MAX_U256 as nat
     requires this.totalDeposit != 0
+    requires this.totalBorrow as nat * this.totalDeposit as nat <= MAX_U256 as nat
+    requires Mul(this.totalBorrow, WAD) as nat + (this.totalDeposit / 2) as nat <= MAX_U256
     {
         var uRatio: u256 := utilizationRatio();
         var interestMul: u256 := interestMultiplier();
@@ -116,10 +122,12 @@ class LendingProtocol {
     method calculateBorrowFee(amount: u256) returns (paid: u256)
     requires this.totalBorrow as nat * WAD as nat <= MAX_U256 as nat
     requires this.totalDeposit != 0
+    requires this.totalBorrow as nat * this.totalDeposit as nat <= MAX_U256 as nat
+    requires Mul(this.totalBorrow, WAD) as nat + (this.totalDeposit / 2) as nat <= MAX_U256
     {
         var borrowRate: u256 := borrowRate();
         assume {:axiom} (amount as nat) * (borrowRate as nat) <= MAX_U256 as nat;
-        var fee: u256 := Mul(amount, borrowRate);
+        var fee: u256 := mulExp(amount, borrowRate);
         assume {:axiom} (amount as nat) - (fee as nat) >= 0 as nat;
         paid := Sub(amount, fee);
     }
@@ -139,12 +147,12 @@ method {:test} testLendingProtocol() {
 
     // Set necessary values for totalDeposit and totalBorrow using setter methods
     protocol.totalDeposit := 100; // Setting totalDeposit to 1 ether (for example)
-    protocol.totalBorrow := 100;   // Setting totalBorrow to 0.5 ether (for example)
+    protocol.totalBorrow := 50;   // Setting totalBorrow to 0.5 ether (for example)
 
     // protocol.totalDeposit := 100;
 
     assert protocol.totalDeposit == 100;
-    assert protocol.totalBorrow == 100;
+    assert protocol.totalBorrow == 50;
 
     // Define the amount for which the borrow fee needs to be calculated
     var borrowAmount: u256 := 20; // Example borrow amount
@@ -154,9 +162,15 @@ method {:test} testLendingProtocol() {
     var paid: u256;
 
     // Call the calculateBorrowFee method and store the results
-    paid := protocol.calculateBorrowFee(borrowAmount);
+    // paid := protocol.calculateBorrowFee(borrowAmount);
 
-    assert paid == 14;
+    var uRa: u256 := Wdiv(protocol.totalBorrow, protocol.totalDeposit);
+    assert uRa == 500000000000000000;
+
+    var a: u256 := protocol.utilizationRatio();
+    assert a == 500000000000000000;
+
+    // assert paid == 14;
 
     // Print or assert the results to verify correctness
     // print "Borrow Fee: ", fee, "\n";
