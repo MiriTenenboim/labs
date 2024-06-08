@@ -1,45 +1,88 @@
 
-#[wasm_bindgen]
-pub struct Image {
-    width: u32,
-    height: u32,
-    pixels: Vec<u8>,
+%lang starknet
+%builtins pedersen range_check
 
-    pixels_bk: Vec<u8>,
-    width_bk: u32,
-    height_bk: u32,
+from starkware.starknet.common.storage import Storage
+from starkware.cairo.common.cairo_builtins import HashBuiltin
 
-    last_operation: Operation,
 
-    hsi: Vec<Vec<f64>>, //  elements: Hue, Saturation, Intensity
-    lab: Vec<f64>, // L*a*b color space, used mostly in bilateral filter for calculating color difference. It'd get cleared when not used.
-    // dct: (Vec<f64>, Vec<f64>),
+fun rotateImage(imageData: ArrayTrait::<u128>, width: u32, degrees: u32) -> ArrayTrait::<u128> {
+    // let width = imageData.len();
+    let height = width;
+
+    let mut rotateImage = ArrayTrait::new();
+
+    let mut dictRotateImage: Felt252Dict<u64> = Default::default();
+
+    if degrees == 90:
+        let mut i: u128 = 0;
+        loop {
+            if i >= width { // Break condition
+                break ();
+            }
+            // Repeating code
+            let mut j: u128 = 0;
+            loop {
+                if j >= height { // Break condition
+                    break ();
+                }
+                // Repeating code
+                let newIndex = (j * width) + (width - i - 1);
+                rotateImage[newIndex] = imageData[i * height + j];
+                j = j + 1;
+            };
+            i = i + 1;
+        };
+    return rotateImage;
+    else:
+        if degrees == 270:
+            let mut i: u128 = 0;
+            loop {
+                if i >= width { // Break condition
+                    break ();
+                }
+                // Repeating code
+                let mut j: u128 = 0;
+                loop {
+                    if j >= height { // Break condition
+                        break ();
+                    }
+                    // Repeating code
+                    let newIndex = ((height - j - 1) * width) + i;
+                    rotateImage[newIndex] = imageData[i * height + j];
+                    j = j + 1;
+                };
+                i = i + 1;
+            };
+        return rotateImage;
+        else:
+            return(0);
+    end
 }
 
-fn rotate(&mut self, clockwise: bool) { // rotate 90
-    let (w, h) = (self.width as usize, self.height as usize);
 
-    let mut new_pixels = vec![0_u8; w * h * 4];
-    let mut new_x;
-    let mut new_y;
-    let mut new_idx: usize;
-    let mut current_idx: usize;
 
-    for row in 0..h {
-        for col in 0..w {
-            new_x = if clockwise { h - 1 - row } else { row };
-            new_y = if clockwise { col } else { w - 1 - col };
-            new_idx = new_y * h + new_x; // new image's height is original image's width
-            current_idx = row * w + col;
+// 
+// surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, 200, 200)
+// ctx = cairo.Context(surface)
 
-            new_pixels[new_idx * 4 + 0] = self.pixels[current_idx * 4 + 0];
-            new_pixels[new_idx * 4 + 1] = self.pixels[current_idx * 4 + 1];
-            new_pixels[new_idx * 4 + 2] = self.pixels[current_idx * 4 + 2];
-            new_pixels[new_idx * 4 + 3] = self.pixels[current_idx * 4 + 3];
-        }
-    }
-    self.pixels = new_pixels;
-    self.width = h as u32;
-    self.height = w as u32;
-    self.last_operation = Operation::Transform
-}
+// # Draw a rectangle
+// ctx.rectangle(50, 50, 100, 50)
+// ctx.set_source_rgb(1, 0, 0)
+// ctx.fill()
+
+// # Define a transformation matrix for rotation
+// angle = 45 * (math.pi / 180)  # Convert angle to radians
+// matrix = cairo.Matrix()
+// matrix.rotate(angle)
+
+// # Apply the transformation to the context
+// ctx.transform(matrix)
+
+// # Draw the same rectangle after rotation
+// ctx.rectangle(50, 50, 100, 50)
+// ctx.set_source_rgb(0, 0, 1)
+// ctx.fill()
+
+// surface.write_to_png("transformed_rectangle.png")
+/// 

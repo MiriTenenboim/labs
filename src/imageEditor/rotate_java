@@ -1,0 +1,33 @@
+public static int[] rotateImage(int[] imageData, int degrees) {
+  // Input validation (optional)
+  // ...
+
+  // Extract image dimensions assuming a square image
+  int width = (int) Math.sqrt(imageData.length);
+  int height = width;
+
+  // Create a new array to store the rotated image data
+  int[] rotatedImage = new int[imageData.length];
+
+  // Define rotation logic based on degrees (handle 90 and 270 for simplicity)
+  if (degrees == 90) {
+    for (int i = 0; i < width; i++) {
+      for (int j = 0; j < height; j++) {
+        int newIndex = (j * width) + (width - i - 1);
+        rotatedImage[newIndex] = imageData[i * height + j];
+      }
+    }
+  } else if (degrees == 270) {
+    for (int i = 0; i < width; i++) {
+      for (int j = 0; j < height; j++) {
+        int newIndex = ((height - j - 1) * width) + i;
+        rotatedImage[newIndex] = imageData[i * height + j];
+      }
+    }
+  } else {
+    // Throw an exception or handle differently for unsupported rotations
+    throw new IllegalArgumentException("Unsupported rotation angle: " + degrees);
+  }
+
+  return rotatedImage;
+}
