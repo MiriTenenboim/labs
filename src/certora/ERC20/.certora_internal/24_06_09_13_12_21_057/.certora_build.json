@@ -1,0 +1,52 @@
+{
+    "ERC20_00000000ce4604a0000000000000000000000001": {
+        "contracts": [
+            {
+                "address": "00000000ce4604a0000000000000000000000001",
+                "allMethods": [],
+                "bytecode": "60806040525f80fdfea2646970667358221220067456d421ee5451fc03deb0dd388e6c8f65d51626869db59e80fd7c4f8927ec64736f6c63430008180033",
+                "compilerName": "solc",
+                "compilerParameters": {
+                    "optimizerOn": false,
+                    "optimizerRuns": null,
+                    "type": "SolcParameters",
+                    "viaIR": false
+                },
+                "compilerVersion": "0.8.24",
+                "constructorBytecode": "6080604052348015600e575f80fd5b50603e80601a5f395ff3fe60806040525f80fdfea2646970667358221220067456d421ee5451fc03deb0dd388e6c8f65d51626869db59e80fd7c4f8927ec64736f6c63430008180033",
+                "constructorSrcmap": "65:19:0:-:0;;;;;;;;;;;;;;;;;;;",
+                "file": "ERC20.sol",
+                "immutables": [],
+                "internalFunctions": {},
+                "is_static_address": false,
+                "lang": "Solidity",
+                "methods": [],
+                "name": "ERC20",
+                "original_file": "ERC20.sol",
+                "solidityTypes": [],
+                "sourceBytes": {
+                    "begin": 65,
+                    "size": 19
+                },
+                "srcmap": "65:19:0:-:0;;;;;",
+                "storageLayout": {
+                    "storage": [],
+                    "types": null
+                },
+                "varmap": ""
+            }
+        ],
+        "legacyStructLinking": {},
+        "library_addresses": [],
+        "primary_contract": "ERC20",
+        "primary_contract_address": "00000000ce4604a0000000000000000000000001",
+        "prototypeFor": [],
+        "sdc_name": "ERC20.sol_0",
+        "sourceDir": ".post_autofinders.0",
+        "srclist": {
+            "0": "ERC20.sol"
+        },
+        "state": {},
+        "structLinkingInfo": {}
+    }
+}

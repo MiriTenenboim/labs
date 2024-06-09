@@ -1,0 +1,38 @@
+Saving last configuration file to .certora_internal/24_06_09_13_15_34_918/run.conf
+There is no TAC file. Going to script EVMVerifier/certoraBuild.py to main_with_args()
+Creating dir /home/user/Documents/labs/src/certora/ERC20/.certora_internal/24_06_09_13_15_34_918/.certora_config
+In /home/user/Documents/labs/src/certora/ERC20/ERC20.spec, found the imports: []
+copying spec file /home/user/Documents/labs/src/certora/ERC20/ERC20.spec to /home/user/Documents/labs/src/certora/ERC20/.certora_internal/24_06_09_13_15_34_918/.certora_sources/.0_ERC20.spec.spec
+writing /home/user/Documents/labs/src/certora/ERC20/.certora_internal/24_06_09_13_15_34_918/.certora_verify.json
+Path to typechecker is /home/user/.local/lib/python3.10/site-packages/certora_jars/Typechecker.jar
+running ['java', '-jar', '/home/user/.local/lib/python3.10/site-packages/certora_jars/Typechecker.jar', '-buildDirectory', '/home/user/Documents/labs/src/certora/ERC20/.certora_internal/24_06_09_13_15_34_918']
+
+building file ERC20.sol
+Running cmd solc --version
+stdout, stderr = .certora_internal/24_06_09_13_15_34_918/.certora_config/version_check_solc.stdout, .certora_internal/24_06_09_13_15_34_918/.certora_config/version_check_solc.stderr
+Exitcode 0
+Solc run solc --version time: 0.0512
+Running cmd solc -o ".certora_internal/24_06_09_13_15_34_918/.certora_config/ERC20.sol_0/" --overwrite --allow-paths ".",. --standard-json
+stdout, stderr = .certora_internal/24_06_09_13_15_34_918/.certora_config/ERC20.sol_0.standard.json.stdout, .certora_internal/24_06_09_13_15_34_918/.certora_config/ERC20.sol_0.standard.json.stderr
+Exitcode 0
+Solc run solc -o ".certora_internal/24_06_09_13_15_34_918/.certora_config/ERC20.sol_0/" --overwrite --allow-paths ".",. --standard-json time: 0.0464
+reading standard json data from .certora_internal/24_06_09_13_15_34_918/.certora_config/ERC20.sol_0.standard.json.stdout
+build failed
+Failure traceback: 
+CertoraUserInputError: solc had an error:
+ParserError: Source "/home/user/Documents/labs/src/certora/ERC20/IERC20.sol" not found: File not found. Searched the following locations: "".
+ --> /home/user/Documents/labs/src/certora/ERC20/ERC20.sol:6:1:
+  |
+6 | import "./IERC20.sol";
+  | ^^^^^^^^^^^^^^^^^^^^^^
+
+
+Encountered an error running Certora Prover:
+solc had an error:
+ParserError: Source "/home/user/Documents/labs/src/certora/ERC20/IERC20.sol" not found: File not found. Searched the following locations: "".
+ --> /home/user/Documents/labs/src/certora/ERC20/ERC20.sol:6:1:
+  |
+6 | import "./IERC20.sol";
+  | ^^^^^^^^^^^^^^^^^^^^^^
+
+

@@ -1,8 +1,0 @@
-{
-    "importFilesToOrigRelpaths": {},
-    "primary_contract": "Empty",
-    "specfile": "birthMonthsRiddle.spec",
-    "specfileOrigRelpath": "birthMonthsRiddle.spec",
-    "specfilesToImportDecls": {},
-    "type": "spec"
-}

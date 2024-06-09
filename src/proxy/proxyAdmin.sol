@@ -38,7 +38,7 @@ contract ProxyAdmin {
         external
         onlyOwner
     {
-        Proxy(proxy).changAdmin(admin);
+        Proxy(proxy).changeAdmin(admin);
     }
 
     function upgrade(address payable proxy, address implementation)
