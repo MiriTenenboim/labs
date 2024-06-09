@@ -65,5 +65,27 @@ fn rotateImage(imageData: @Array<u256>, width: u32, degrees: u32) -> Array<u256>
 fn main() {
     let width: u32 = 10;
     let height: u32 = 10;
-    let flag: bool = createGrayscaleImage(:width, :height);
+    int[][] image = {
+                    {255, 255, 255, 255, 255, 255, 255, 255, 255, 255},
+                    {255, 200, 200, 200, 200, 200, 200, 200, 200, 255},
+                    {255, 200, 150, 150, 150, 150, 150, 150, 200, 255},
+                    {255, 200, 150, 100, 100, 100, 100, 150, 200, 255},
+                    {255, 200, 150, 100,  50,  50, 100, 150, 200, 255},
+                    {255, 200, 150, 100,  50,  50, 100, 150, 200, 255},
+                    {255, 200, 150, 100, 100, 100, 100, 150, 200, 255},
+                    {255, 200, 150, 150, 150, 150, 150, 150, 200, 255},
+                    {255, 200, 200, 200, 200, 200, 200, 200, 200, 255},
+                    {255, 255, 255, 255, 255, 255, 255, 255, 255, 255}
+                };
+    byte[] imageData = new byte[width * height];
+    int index = 0;
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            imageData[index++] = (byte) image[i][j];
+        }
+    }
+
+    let degrees: u32 = 90;
+
+    let mut rotateImage:Array<u256> = rotateImage(:imageData, :width, :degrees);
 }
