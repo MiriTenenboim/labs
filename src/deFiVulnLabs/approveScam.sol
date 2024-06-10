@@ -3,7 +3,7 @@ pragma solidity ^0.8.24;
 
 import "forge-std/Test.sol";
 
-contract ContractTest is Test {
+contract TestERC20 is Test {
     ERC20 ERC20Contract;
     address alice = vm.addr(1);
     address eve = vm.addr(2);
