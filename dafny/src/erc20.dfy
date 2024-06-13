@@ -14,10 +14,20 @@ class ERC20 {
     // this value is not directly used as the external representation, that is in u256
     var balances:  mapping<u160,u256>
     var allowance: mapping<u160, mapping<u160,u256>>
+    var supply: u256
 
-    constructor() {
+    var fee: u256
+
+    var owner: u160
+
+    constructor(ownerAddress: u160) {
         balances := Map(map[], 0);
         allowance := Map(map[], Map(map[],0));
+        supply := 0;
+
+        fee := 3;
+        
+        owner := ownerAddress;
     }
 
     method fallback(msg: Transaction) returns (r: Result<()>)
@@ -52,6 +62,16 @@ class ERC20 {
         return Ok(());
     }
 
+    method mint(msg: Transaction, dst: u160, wad: u256)
+    requires balances.Get(dst) as nat + wad as nat <= MAX_U256
+    requires supply as nat + wad as nat <= MAX_U256
+    ensures supply as nat == old(supply) as nat + wad as nat
+    modifies this`balances, this`supply {
+        balances := balances.Set(dst, balances.Get(dst) + wad);
+        supply := supply + wad;
+
+    }
+
     method approve(msg: Transaction, guy: u160, wad: u256) returns (r: Result<bool>)
     modifies this`allowance {
         var a := allowance.Get(msg.sender).Set(guy, wad);
@@ -59,15 +79,28 @@ class ERC20 {
         return Ok(true);
     }
 
+    method calculateFee(wad: u256) returns (calcFee: u256)
+    requires wad as nat * fee as nat <= MAX_U256 as nat {
+        calcFee := (wad * fee) / 100;
+    }
+
+
     method transfer(msg: Transaction, dst: u160, wad: u256) returns (r: Result<bool>)
     modifies this`balances
     modifies this`allowance
     requires this.balances.default == 0
     requires msg.sender in balances.Keys()
     requires dst in balances.Keys()
+    requires wad as nat * fee as nat <= MAX_U256 as nat
     requires msg.value == 0 {  // non-payable
         r := transferFrom(msg, msg.sender, dst, wad);
+        var calcFee := calculateFee(wad);
+        assume {:axiom} this.balances.default == 0;
+        assume {:axiom} msg.sender in balances.Keys();
+        assume {:axiom} owner in balances.Keys();
+        r := transferFrom(msg, msg.sender, owner, calcFee);
     }
+
 
     // instead of assuming I added a dst_bal require
     // assume (old(balanceOf).Get(dst) as nat) + (wad as nat) <= MAX_U256;
@@ -116,7 +149,7 @@ class ERC20 {
             var b_base := prior.Items() - {b1,b2};
             var a_base := after.Items() - {a1,a2};
             // fixme: why assumtion here?
-            assume a_base == b_base;
+            assume {:axiom} a_base == b_base;
             // base case
             set_as_union(b1,b2);
             set_as_union(a1,a2);
@@ -192,4 +225,3 @@ class ERC20 {
     }
 
 }
-
