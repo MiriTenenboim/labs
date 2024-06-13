@@ -18,14 +18,14 @@ class LendingProtocol {
     const maxLTV: u256 := 4
     var ethTreasury: u256
     var totalCollateral: u256
-    const baseRate: u256 := 20000000000000000
-    const fixedAnnuBorrowRate: u256 := 300000000000000000
+    const baseRate: u256 := 20_000_000_000_000_000
+    const fixedAnnuBorrowRate: u256 := 300_000_000_000_000_000
 
     var usersCollateral: mapping<u160, u256>  // ETH
     var usersBorrowed: mapping<u160, u256>    // DAI - borrow
     var usersBalances: mapping<u160, u256>    // DAI - bond
 
-    const WAD: u256 := 1000000000000000000
+    const WAD: u256 := 1_000_000_000_000_000_000
     const HALF_WAD: u256 := WAD / 2
 
     var DAI: ERC20
