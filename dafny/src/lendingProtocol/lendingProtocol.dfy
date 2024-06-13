@@ -153,36 +153,30 @@ method {:test} testLendingProtocol() {
     // Instantiate the LendingProtocol class
     var protocol := new LendingProtocol();
 
-    // Set necessary values for totalDeposit and totalBorrow using setter methods
-    protocol.totalDeposit := 100; // Setting totalDeposit to 1 ether (for example)
-    protocol.totalBorrow := 50;   // Setting totalBorrow to 0.5 ether (for example)
+    protocol.totalDeposit := 100; 
+    protocol.totalBorrow := 50; 
 
     assert protocol.totalDeposit == 100;
     assert protocol.totalBorrow == 50;
 
-    // Define the amount for which the borrow fee needs to be calculated
-    var borrowAmount: u256 := 20; // Example borrow amount
+    var borrowAmount: u256 := 20;
 
-    // Declare variables to store the results
     var fee: u256;
     var paid: u256;
 
-    // Call the calculateBorrowFee method and store the results
     // paid := protocol.calculateBorrowFee(borrowAmount);
 
-    var uRa: u256 := Wdiv(protocol.totalBorrow, protocol.totalDeposit);
-    assert uRa == 500000000000000000;
+    var uRatio: u256 := Wdiv(protocol.totalBorrow, protocol.totalDeposit);
+    assert uRatio == 500000000000000000;
 
-    var a: u256 := protocol.utilizationRatio();
-    // assert a == 500000000000000000;
+    var utilizationRatio: u256 := protocol.utilizationRatio();
+    // assert utilizationRatio == 500000000000000000;
 
     // assert paid == 14;
 
-    // Print or assert the results to verify correctness
     // print "Borrow Fee: ", fee, "\n";
     // print "Amount Paid: ", paid, "\n";
 
-    // Optionally, you can include assertions to check expected values
     // assert fee >= 0;
     // assert paid == borrowAmount - fee;
 }
