@@ -1,8 +1,8 @@
 
-include "util/number.dfy"
-include "util/maps.dfy"
-include "util/tx.dfy"
-include "util/fixed.dfy"
+include "../util/number.dfy"
+include "../util/maps.dfy"
+include "../util/tx.dfy"
+include "../util/fixed.dfy"
 
 
 import opened Number
