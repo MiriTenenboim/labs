@@ -19,7 +19,6 @@ class ERC20 {
     var supply: u256
 
     const fee: u256 := 3
-    const WAD: u256 := 1_000_000_000_000_000_000
 
     var owner: u160
 
