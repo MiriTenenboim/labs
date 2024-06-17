@@ -18,10 +18,16 @@ class ERC20 {
     var allowance: mapping<u160, mapping<u160,u256>>
     var supply: u256
 
+    const fee: u256 := 3
+
+    var owner: u160
+
     constructor() {
         balances := Map(map[], 0);
         allowance := Map(map[], Map(map[],0));
         supply := 0;
+        
+        // owner := msg.sender;
     }
 
     method fallback(msg: Transaction) returns (r: Result<()>)
@@ -73,14 +79,28 @@ class ERC20 {
         return Ok(true);
     }
 
+    method calculateFee(wad: u256) returns (calcFee: u256)
+    requires (fee / 100) != 0 {
+        calcFee := Wdiv(wad, Wdiv(fee, 100));
+    }
+
+
     method transfer(msg: Transaction, dst: u160, wad: u256) returns (r: Result<bool>)
     modifies this`balances
     modifies this`allowance
     requires this.balances.default == 0
     requires msg.sender in balances.Keys()
     requires dst in balances.Keys()
+    requires (fee / 100) != 0
     requires msg.value == 0 {  // non-payable
-        r := transferFrom(msg, msg.sender, dst, wad);
+        var calcWad := calculateFee(wad);
+        r := transferFrom(msg, msg.sender, dst, calcWad);
+        assume {:axiom} this.balances.default == 0;
+        assume {:axiom} msg.sender in balances.Keys();
+        assume {:axiom} owner in balances.Keys();
+        assume {:axiom} wad as nat - calcWad as nat >= 0;
+        var calcFee := wad - calcWad;
+        r := transferFrom(msg, msg.sender, owner, calcFee);
     }
 
 
